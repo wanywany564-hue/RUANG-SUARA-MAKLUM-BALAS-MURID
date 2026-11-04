@@ -1,3 +1,20 @@
+// ==========================================
+// RUANG SUARA MURID
+// SISTEM MAKLUM BALAS DAN REFLEKSI MURID
+// ==========================================
+
+const SUPABASE_URL = "https://ohrohitzchrwbbudulnz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ikihxhuliL0PEISbex9k4A_ODkIv_Ia";
+
+const TABLE_NAME = "student_feedback";
+
+const EMOJI = {
+    "Sangat gembira": "😄",
+    "Seronok": "🙂",
+    "Biasa sahaja": "😐",
+    "Masih keliru": "😕"
+};
+
 const form = document.getElementById("feedbackForm");
 const submitBtn = document.getElementById("submitBtn");
 const submitText = document.getElementById("submitText");
@@ -7,19 +24,33 @@ const commentsList = document.getElementById("commentsList");
 const totalFeedback = document.getElementById("totalFeedback");
 const refreshBtn = document.getElementById("refreshBtn");
 
-const EMOJI = {
-    "Sangat gembira": "😄",
-    "Seronok": "🙂",
-    "Biasa sahaja": "😐",
-    "Masih keliru": "😕"
-};
+let db = null;
+let realtimeChannel = null;
+let isSubmitting = false;
+let isLoading = false;
 
-document.addEventListener("DOMContentLoaded", function() {
-    loadFeedback();
-});
+// Semak konfigurasi Supabase
+const isConfigured =
+    SUPABASE_URL.startsWith("https://") &&
+    SUPABASE_KEY.length > 20 &&
+    !SUPABASE_URL.includes("MASUKKAN");
 
+if (isConfigured && window.supabase) {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} else {
+    showMessage("Sila pastikan skrip Supabase dimuatkan dalam HTML.", "error");
+    commentsList.textContent = "Sistem belum disambungkan kepada pangkalan data.";
+    submitBtn.disabled = true;
+}
+
+function showMessage(text, type) {
+    formMessage.textContent = text;
+    formMessage.className = "form-message " + type;
+    formMessage.style.color = type === "success" ? "#419B78" : "#D46C80";
+}
+
+// Pilih Emoji
 const emotionOptions = document.querySelectorAll(".emotion-option");
-
 emotionOptions.forEach(button => {
     button.addEventListener("click", function() {
         emotionOptions.forEach(option => {
@@ -32,6 +63,7 @@ emotionOptions.forEach(button => {
     });
 });
 
+// Kira Aksara
 function setupCharacterCounter(inputId, counterId) {
     const input = document.getElementById(inputId);
     const counter = document.getElementById(counterId);
@@ -39,12 +71,13 @@ function setupCharacterCounter(inputId, counterId) {
         counter.textContent = this.value.length;
     });
 }
-
 setupCharacterCounter("understood", "understoodCount");
 setupCharacterCounter("confused", "confusedCount");
 
-form.addEventListener("submit", function(event) {
+// Hantar Maklum Balas
+form.addEventListener("submit", async function(event) {
     event.preventDefault();
+    if (!db || isSubmitting) return;
 
     const studentName = document.getElementById("studentName").value.trim();
     const feeling = document.getElementById("feeling").value;
@@ -56,60 +89,49 @@ form.addEventListener("submit", function(event) {
         return;
     }
 
-    if (studentName.length > 30 || understood.length > 500 || confused.length > 500) {
-        showMessage("Sila semak semula panjang jawapan kamu.", "error");
-        return;
-    }
-
+    isSubmitting = true;
     submitBtn.disabled = true;
     submitText.textContent = "SEDANG MENGHANTAR...";
+    showMessage("", "success");
 
-    let senarai = JSON.parse(localStorage.getItem("student_feedback_local")) || [];
+    try {
+        const { error } = await db.from(TABLE_NAME).insert([{
+            student_name: studentName,
+            feeling: feeling,
+            understood: understood,
+            confused: confused
+        }]);
 
-    const rekodBaru = {
-        student_name: studentName,
-        feeling: feeling,
-        understood: understood,
-        confused: confused,
-        created_at: new Date().toISOString()
-    };
+        if (error) throw error;
 
-    senarai.unshift(rekodBaru);
-    localStorage.setItem("student_feedback_local", JSON.stringify(senarai));
+        showMessage("Tahniah! Maklum balas kamu berjaya disimpan.", "success");
+        form.reset();
+        emotionOptions.forEach(option => {
+            option.classList.remove("selected");
+            option.setAttribute("aria-pressed", "false");
+        });
+        document.getElementById("understoodCount").textContent = "0";
+        document.getElementById("confusedCount").textContent = "0";
 
-    showMessage("Tahniah! Maklum balas kamu berjaya disimpan.", "success");
+        await loadFeedback();
 
-    form.reset();
-    emotionOptions.forEach(option => {
-        option.classList.remove("selected");
-        option.setAttribute("aria-pressed", "false");
-    });
-    document.getElementById("feeling").value = "";
-    document.getElementById("understoodCount").textContent = "0";
-    document.getElementById("confusedCount").textContent = "0";
-
-    loadFeedback();
-
-    submitBtn.disabled = false;
-    submitText.textContent = "HANTAR MAKLUM BALAS";
-
-    document.getElementById("comments-section").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+        document.getElementById("comments-section").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    } catch (error) {
+        console.error("Ralat penghantaran:", error);
+        showMessage("Maaf, maklum balas tidak berjaya dihantar. Sila cuba lagi.", "error");
+    } finally {
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        submitText.textContent = "HANTAR MAKLUM BALAS";
+    }
 });
-
-function showMessage(text, type) {
-    formMessage.textContent = text;
-    formMessage.className = "form-message " + type;
-    formMessage.style.color = type === "success" ? "#419B78" : "#D46C80";
-}
 
 function formatDate(dateValue) {
     const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) {
-        return "Tarikh tidak tersedia";
-    }
+    if (Number.isNaN(date.getTime())) return "Tarikh tidak tersedia";
     return date.toLocaleString("ms-MY", {
         dateStyle: "medium",
         timeStyle: "short",
@@ -158,25 +180,61 @@ function createCommentCard(item) {
     return card;
 }
 
-function loadFeedback() {
-    const senarai = JSON.parse(localStorage.getItem("student_feedback_local")) || [];
+async function loadFeedback() {
+    if (!db || isLoading) return;
+    isLoading = true;
+    commentsList.textContent = "Sedang memuatkan maklum balas...";
 
-    totalFeedback.textContent = senarai.length;
-    commentsList.replaceChildren();
+    try {
+        const { count, error: countError } = await db.from(TABLE_NAME).select("id", { count: "exact", head: true });
+        if (countError) throw countError;
 
-    if (senarai.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty-state";
-        empty.textContent = "Belum ada maklum balas. Jadilah murid pertama yang berkongsi!";
-        commentsList.appendChild(empty);
-        return;
+        const { data, error } = await db.from(TABLE_NAME)
+            .select("id, student_name, feeling, understood, confused, created_at")
+            .order("created_at", { ascending: false })
+            .limit(200);
+
+        if (error) throw error;
+
+        totalFeedback.textContent = count ?? 0;
+        commentsList.replaceChildren();
+
+        if (!data || data.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.textContent = "Belum ada maklum balas. Jadilah murid pertama yang berkongsi!";
+            commentsList.appendChild(empty);
+            return;
+        }
+
+        data.forEach(item => {
+            commentsList.appendChild(createCommentCard(item));
+        });
+    } catch (error) {
+        console.error("Ralat memuatkan rekod:", error);
+        commentsList.textContent = "Maaf, rekod tidak dapat dimuatkan. Sila cuba semula.";
+    } finally {
+        isLoading = false;
     }
-
-    senarai.forEach(item => {
-        commentsList.appendChild(createCommentCard(item));
-    });
 }
 
 refreshBtn.addEventListener("click", function() {
     loadFeedback();
 });
+
+function setupRealtime() {
+    if (!db) return;
+    realtimeChannel = db.channel("student-feedback-live")
+        .on("postgres_changes", { event: "*", schema: "public", table: TABLE_NAME }, () => {
+            loadFeedback();
+        })
+        .subscribe();
+}
+
+async function startApp() {
+    if (!db) return;
+    await loadFeedback();
+    setupRealtime();
+}
+
+startApp();

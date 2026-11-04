@@ -1,8 +1,3 @@
-// ==========================================
-// RUANG SUARA MURID (VERSI LOCALSTORAGE)
-// TANPA PERLU SUPABASE / PANGKALAN DATA
-// ==========================================
-
 const form = document.getElementById("feedbackForm");
 const submitBtn = document.getElementById("submitBtn");
 const submitText = document.getElementById("submitText");
@@ -19,13 +14,10 @@ const EMOJI = {
     "Masih keliru": "😕"
 };
 
-// Muatkan rekod apabila laman dibuka
 document.addEventListener("DOMContentLoaded", function() {
     loadFeedback();
 });
 
-
-// 1. PILIH EMOJI PERASAAN
 const emotionOptions = document.querySelectorAll(".emotion-option");
 
 emotionOptions.forEach(button => {
@@ -40,8 +32,6 @@ emotionOptions.forEach(button => {
     });
 });
 
-
-// 2. KIRA JUMLAH AKSARA
 function setupCharacterCounter(inputId, counterId) {
     const input = document.getElementById(inputId);
     const counter = document.getElementById(counterId);
@@ -53,8 +43,6 @@ function setupCharacterCounter(inputId, counterId) {
 setupCharacterCounter("understood", "understoodCount");
 setupCharacterCounter("confused", "confusedCount");
 
-
-// 3. HANTAR MAKLUM BALAS
 form.addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -76,10 +64,8 @@ form.addEventListener("submit", function(event) {
     submitBtn.disabled = true;
     submitText.textContent = "SEDANG MENGHANTAR...";
 
-    // Ambil data sedia ada dari LocalStorage
     let senarai = JSON.parse(localStorage.getItem("student_feedback_local")) || [];
 
-    // Cipta rekod baharu bersama tarikh semasa
     const rekodBaru = {
         student_name: studentName,
         feeling: feeling,
@@ -88,15 +74,11 @@ form.addEventListener("submit", function(event) {
         created_at: new Date().toISOString()
     };
 
-    // Masukkan ke dalam senarai (paling atas)
     senarai.unshift(rekodBaru);
-
-    // Simpan semula ke LocalStorage
     localStorage.setItem("student_feedback_local", JSON.stringify(senarai));
 
     showMessage("Tahniah! Maklum balas kamu berjaya disimpan.", "success");
 
-    // Kosongkan borang
     form.reset();
     emotionOptions.forEach(option => {
         option.classList.remove("selected");
@@ -106,29 +88,23 @@ form.addEventListener("submit", function(event) {
     document.getElementById("understoodCount").textContent = "0";
     document.getElementById("confusedCount").textContent = "0";
 
-    // Muatkan semula senarai paparan
     loadFeedback();
 
     submitBtn.disabled = false;
     submitText.textContent = "HANTAR MAKLUM BALAS";
 
-    // Pergi ke bahagian komen
     document.getElementById("comments-section").scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
 });
 
-
-// 4. Mesej Status
 function showMessage(text, type) {
     formMessage.textContent = text;
     formMessage.className = "form-message " + type;
     formMessage.style.color = type === "success" ? "#419B78" : "#D46C80";
 }
 
-
-// 5. Format Tarikh
 function formatDate(dateValue) {
     const date = new Date(dateValue);
     if (Number.isNaN(date.getTime())) {
@@ -141,8 +117,6 @@ function formatDate(dateValue) {
     });
 }
 
-
-// 6. Bina Kad Komen
 function createCommentCard(item) {
     const card = document.createElement("article");
     card.className = "comment-card";
@@ -184,8 +158,6 @@ function createCommentCard(item) {
     return card;
 }
 
-
-// 7. Muatkan Semula Paparan Maklum Balas
 function loadFeedback() {
     const senarai = JSON.parse(localStorage.getItem("student_feedback_local")) || [];
 
@@ -205,8 +177,6 @@ function loadFeedback() {
     });
 }
 
-
-// 8. Butang Muat Semula
 refreshBtn.addEventListener("click", function() {
     loadFeedback();
 });

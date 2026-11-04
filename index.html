@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruang Suara Murid</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Skrip rasmi Supabase yang diperlukan -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -32,94 +31,100 @@
             </div>
         </section>
 
-        <section class="section-card" id="feedback-section">
-            <div class="section-heading">
-                <span class="section-number">01</span>
-                <div>
-                    <h2>Jom Berikan Maklum Balas!</h2>
-                    <p>Kongsikan pengalaman pembelajaran kamu.</p>
-                </div>
-            </div>
-
-            <form id="feedbackForm">
-                <div class="form-group">
-                    <label for="studentName">Nama panggilan kamu <span class="required">*</span></label>
-                    <input type="text" id="studentName" maxlength="30" placeholder="Contoh: Ali" autocomplete="off" required>
-                </div>
-
-                <div class="form-group">
-                    <label>1. Apakah perasaan kamu selepas mengikuti pembelajaran hari ini? <span class="required">*</span></label>
-                    <div class="emotion-grid">
-                        <button type="button" class="emotion-option" data-feeling="Sangat gembira" aria-pressed="false">
-                            <span class="emotion-emoji">😄</span>
-                            <span class="emotion-label">Sangat gembira</span>
-                        </button>
-                        <button type="button" class="emotion-option" data-feeling="Seronok" aria-pressed="false">
-                            <span class="emotion-emoji">🙂</span>
-                            <span class="emotion-label">Seronok</span>
-                        </button>
-                        <button type="button" class="emotion-option" data-feeling="Biasa sahaja" aria-pressed="false">
-                            <span class="emotion-emoji">😐</span>
-                            <span class="emotion-label">Biasa sahaja</span>
-                        </button>
-                        <button type="button" class="emotion-option" data-feeling="Masih keliru" aria-pressed="false">
-                            <span class="emotion-emoji">😕</span>
-                            <span class="emotion-label">Masih keliru</span>
-                        </button>
+        <!-- KAWASAN UTAMA: DUA KOLUM (KIRI: BORANG, KANAN: REKOD/RESPON) -->
+        <div class="landscape-grid">
+            
+            <!-- SEBELAH KIRI: BORANG MAKLUM BALAS -->
+            <section class="section-card" id="feedback-section">
+                <div class="section-heading">
+                    <span class="section-number">01</span>
+                    <div>
+                        <h2>Jom Berikan Maklum Balas!</h2>
+                        <p>Kongsikan pengalaman pembelajaran kamu.</p>
                     </div>
-                    <input type="hidden" id="feeling">
                 </div>
 
-                <div class="form-group">
-                    <label for="understood">2. Apakah perkara yang kamu faham selepas mengikuti pembelajaran ini? <span class="required">*</span></label>
-                    <textarea id="understood" maxlength="500" rows="4" placeholder="Saya faham bahawa..." required></textarea>
-                    <div class="character-count"><span id="understoodCount">0</span>/500 aksara</div>
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label for="studentName">Nama panggilan kamu <span class="required">*</span></label>
+                        <input type="text" id="studentName" maxlength="30" placeholder="Contoh: Ali" autocomplete="off" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>1. Apakah perasaan kamu selepas mengikuti pembelajaran hari ini? <span class="required">*</span></label>
+                        <div class="emotion-grid">
+                            <button type="button" class="emotion-option" data-feeling="Sangat gembira" aria-pressed="false">
+                                <span class="emotion-emoji">😄</span>
+                                <span class="emotion-label">Gembira</span>
+                            </button>
+                            <button type="button" class="emotion-option" data-feeling="Seronok" aria-pressed="false">
+                                <span class="emotion-emoji">🙂</span>
+                                <span class="emotion-label">Seronok</span>
+                            </button>
+                            <button type="button" class="emotion-option" data-feeling="Biasa sahaja" aria-pressed="false">
+                                <span class="emotion-emoji">😐</span>
+                                <span class="emotion-label">Biasa</span>
+                            </button>
+                            <button type="button" class="emotion-option" data-feeling="Masih keliru" aria-pressed="false">
+                                <span class="emotion-emoji">😕</span>
+                                <span class="emotion-label">Keliru</span>
+                            </button>
+                        </div>
+                        <input type="hidden" id="feeling">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="understood">2. Apakah perkara yang kamu faham selepas mengikuti pembelajaran ini? <span class="required">*</span></label>
+                        <textarea id="understood" maxlength="500" rows="3" placeholder="Saya faham bahawa..." required></textarea>
+                        <div class="character-count"><span id="understoodCount">0</span>/500 aksara</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confused">3. Apakah perkara yang masih mengelirukan?</label>
+                        <textarea id="confused" maxlength="500" rows="3" placeholder="Saya masih kurang faham tentang..."></textarea>
+                        <div class="character-count"><span id="confusedCount">0</span>/500 aksara</div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="submit-button">
+                        <span id="submitText">HANTAR MAKLUM BALAS</span>
+                        <span class="submit-arrow">➜</span>
+                    </button>
+
+                    <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
+                </form>
+            </section>
+
+            <!-- SEBELAH KANAN: PAPARAN REKOD / SUARA RAKAN-RAKAN -->
+            <section class="section-card" id="comments-section">
+                <div class="section-heading">
+                    <span class="section-number blue">02</span>
+                    <div>
+                        <h2>Suara Rakan-Rakan</h2>
+                        <p>Senarai maklum balas yang telah dihantar.</p>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="confused">3. Apakah perkara yang masih mengelirukan atau ingin kamu ketahui dengan lebih lanjut?</label>
-                    <textarea id="confused" maxlength="500" rows="4" placeholder="Saya masih kurang faham tentang..."></textarea>
-                    <div class="character-count"><span id="confusedCount">0</span>/500 aksara</div>
+                <div class="statistics-card">
+                    <div class="statistics-icon">💬</div>
+                    <div>
+                        <div class="statistics-number" id="totalFeedback">0</div>
+                        <div class="statistics-label">Jumlah maklum balas</div>
+                    </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="submit-button">
-                    <span id="submitText">HANTAR MAKLUM BALAS</span>
-                    <span class="submit-arrow">➜</span>
-                </button>
-
-                <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
-                <p class="privacy-note">Maklum balas yang dihantar akan dipaparkan kepada rakan-rakan lain. Gunakan nama panggilan sahaja.</p>
-            </form>
-        </section>
-
-        <section class="section-card" id="comments-section">
-            <div class="section-heading">
-                <span class="section-number blue">02</span>
-                <div>
-                    <h2>Suara Rakan-Rakan</h2>
-                    <p>Mari baca dan hargai perkongsian rakan-rakan kamu!</p>
+                <div id="commentsList" class="comments-list">
+                    <div class="loading-state">Sedang memuatkan maklum balas...</div>
                 </div>
-            </div>
 
-            <div class="statistics-card">
-                <div class="statistics-icon">💬</div>
-                <div>
-                    <div class="statistics-number" id="totalFeedback">0</div>
-                    <div class="statistics-label">Jumlah maklum balas diterima</div>
-                </div>
-            </div>
+                <button type="button" id="refreshBtn" class="refresh-button">↻ Muat semula rekod</button>
+            </section>
 
-            <div id="commentsList" class="comments-list">
-                <div class="loading-state">Sedang memuatkan maklum balas...</div>
-            </div>
-
-            <button type="button" id="refreshBtn" class="refresh-button">↻ Muat semula rekod</button>
-        </section>
+        </div>
 
         <section class="closing-card">
             <div class="closing-flower">🌼</div>
             <h2>Terima Kasih!</h2>
-            <p>Setiap perkara yang kamu pelajari ialah satu pencapaian. Teruskan berusaha dan jangan takut untuk bertanya!</p>
+            <p>Setiap perkara yang kamu pelajari ialah satu pencapaian. Teruskan berusaha!</p>
         </section>
     </main>
 

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
+
     <header class="hero">
         <div class="hero-decoration decoration-one">✦</div>
         <div class="hero-decoration decoration-two">✿</div>
@@ -20,6 +21,7 @@
             <div class="hero-decoration-bottom">♡</div>
         </div>
     </header>
+
     <main class="main-container">
         <section class="welcome-card">
             <div class="welcome-icon">🌷</div>
@@ -28,20 +30,26 @@
                 <p>Setiap pendapat kamu sangat bermakna. Lengkapkan refleksi di bawah dan kongsikan pengalaman pembelajaran bersama rakan-rakan.</p>
             </div>
         </section>
+
+        <!-- KAWASAN UTAMA: DUA KOLUM (KIRI: BORANG, KANAN: REKOD/RESPON) -->
         <div class="landscape-grid">
+            
+            <!-- SEBELAH KIRI: BORANG REFLEKSI -->
             <section class="section-card" id="feedback-section">
                 <div class="section-heading">
                     <span class="section-number">01</span>
                     <div>
-                        <h2>Jom Berikan Maklum Balas!</h2>
+                        <h2>Jom Tulis Refleksi!</h2>
                         <p>Kongsikan pengalaman pembelajaran kamu.</p>
                     </div>
                 </div>
+
                 <form id="feedbackForm">
                     <div class="form-group">
                         <label for="studentName">Nama panggilan kamu <span class="required">*</span></label>
                         <input type="text" id="studentName" maxlength="30" placeholder="Contoh: Ali" autocomplete="off" required>
                     </div>
+
                     <div class="form-group">
                         <label>1. Apakah perasaan kamu selepas mengikuti pembelajaran hari ini? <span class="required">*</span></label>
                         <div class="emotion-grid">
@@ -64,50 +72,62 @@
                         </div>
                         <input type="hidden" id="feeling">
                     </div>
+
                     <div class="form-group">
                         <label for="understood">2. Apakah perkara yang kamu faham selepas mengikuti pembelajaran ini? <span class="required">*</span></label>
                         <textarea id="understood" maxlength="500" rows="3" placeholder="Saya faham bahawa..." required></textarea>
                         <div class="character-count"><span id="understoodCount">0</span>/500 aksara</div>
                     </div>
+
                     <div class="form-group">
                         <label for="confused">3. Apakah perkara yang masih mengelirukan?</label>
                         <textarea id="confused" maxlength="500" rows="3" placeholder="Saya masih kurang faham tentang..."></textarea>
                         <div class="character-count"><span id="confusedCount">0</span>/500 aksara</div>
                     </div>
+
                     <button type="submit" id="submitBtn" class="submit-button">
-                        <span id="submitText">HANTAR MAKLUM BALAS</span>
+                        <span id="submitText">HANTAR REFLEKSI</span>
                         <span class="submit-arrow">➜</span>
                     </button>
+
                     <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
                 </form>
             </section>
+
+            <!-- SEBELAH KANAN: PAPARAN REKOD / SUARA RAKAN-RAKAN -->
             <section class="section-card" id="comments-section">
                 <div class="section-heading">
                     <span class="section-number blue">02</span>
                     <div>
                         <h2>Suara Rakan-Rakan</h2>
-                        <p>Senarai maklum balas yang telah dihantar.</p>
+                        <p>Senarai refleksi yang telah dihantar.</p>
                     </div>
                 </div>
+
                 <div class="statistics-card">
                     <div class="statistics-icon">💬</div>
                     <div>
                         <div class="statistics-number" id="totalFeedback">0</div>
-                        <div class="statistics-label">Jumlah maklum balas</div>
+                        <div class="statistics-label">Jumlah refleksi</div>
                     </div>
                 </div>
+
                 <div id="commentsList" class="comments-list">
-                    <div class="loading-state">Sedang memuatkan maklum balas...</div>
+                    <div class="loading-state">Sedang memuatkan refleksi...</div>
                 </div>
+
                 <button type="button" id="refreshBtn" class="refresh-button">↻ Muat semula rekod</button>
             </section>
+
         </div>
+
         <section class="closing-card">
             <div class="closing-flower">🌼</div>
             <h2>Terima Kasih!</h2>
             <p>Setiap perkara yang kamu pelajari ialah satu pencapaian. Teruskan berusaha!</p>
         </section>
     </main>
+
     <script src="script.js"></script>
 </body>
 </html>

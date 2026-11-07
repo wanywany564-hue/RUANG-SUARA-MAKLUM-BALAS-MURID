@@ -7,6 +7,37 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Gaya tambahan ringkas untuk pemain muzik latar */
+        .bg-music-player {
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+        }
+        .music-btn {
+            background: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #333;
+            transition: 0.2s;
+        }
+        .music-btn:hover {
+            background: #f0f0f0;
+        }
+        .music-label {
+            font-size: 0.9rem;
+            color: #fff;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,6 +49,14 @@
             <h1>RUANG SUARA MURID</h1>
             <p class="hero-subtitle">Suara Anda, Inspirasi Kami!</p>
             <p class="hero-description">Jom kongsikan perasaan, pengalaman dan perkara yang telah kamu pelajari hari ini.</p>
+            
+            <!-- BAHAGIAN PEMAIN LAGU / MUZIK LATAR -->
+            <div class="bg-music-player">
+                <span class="music-label">🎵 Muzik Latar:</span>
+                <audio id="bgMusic" src="lagu-anda.mp3" loop></audio>
+                <button type="button" class="music-btn" id="playMusicBtn" onclick="toggleMusic()">Mainkan Lagu</button>
+            </div>
+
             <div class="hero-decoration-bottom">♡</div>
         </div>
     </header>
@@ -127,6 +166,22 @@
             <p>Setiap perkara yang kamu pelajari ialah satu pencapaian. Teruskan berusaha!</p>
         </section>
     </main>
+
+    <!-- SKRIP KAWALAN MUZIK (TAMBAHAN) -->
+    <script>
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const btn = document.getElementById('playMusicBtn');
+            
+            if (music.paused) {
+                music.play();
+                btn.textContent = 'Hentikan Lagu';
+            } else {
+                music.pause();
+                btn.textContent = 'Mainkan Lagu';
+            }
+        }
+    </script>
 
     <script src="script.js"></script>
 </body>
